@@ -7,7 +7,6 @@ import obspython as obs
 def update_source():
 	global velocity
 	global source_name
-	global enabled
 	global x_dir
 	global y_dir
 
@@ -16,7 +15,7 @@ def update_source():
 	scene_item = obs.obs_scene_find_source(scene, source_name)
 
 	# If a target source is found, update it on screen
-	if scene_item and enabled:
+	if scene_item:
 		dx, dy = 5, 5
 
 		# Get the current location of the source
@@ -59,9 +58,17 @@ def update_source():
 	obs.obs_source_release(source)
 	# obs.obs_sceneitem_release(scene_item) # This causes a crash and I don't know why
 
-# Toggles whether the movement is enabled
+# Toggles whether the movement is enabled by adding and removing timers
 def enable_disable(props, prop):
 	global enabled
+	
+	# Remove the timer if already enabled, add timer otherwise
+	if enabled:
+		obs.timer_remove(update_source)
+	else:
+		obs.timer_add(update_source, interval)
+
+	# Swap the enable toggle
 	enabled = not enabled
 
 # ------------------------------------------------------------
