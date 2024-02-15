@@ -3,7 +3,6 @@ obs = obslua
 velocity = 5
 interval = 25
 source_name = ""
-enabled = true
 x_dir = 1
 y_dir = 1
 
@@ -62,18 +61,6 @@ function update_source()
 	-- obs.obs_sceneitem_release(scene_item) -- This causes a crash and I don't know why
 end
 
-function enable_disable(props, prop)
-	-- Remove the timer if already enabled, add timer otherwise
-	if enabled then
-		obs.timer_remove(update_source)
-	else
-		obs.timer_add(update_source, interval)
-	end
-
-	-- Swap the enable toggle
-	enabled = not enabled
-end
-
 -------------------------------------------
 ------ Code to Initialize the Script ------
 -------------------------------------------
@@ -87,24 +74,24 @@ function script_update(settings)
 	interval = obs.obs_data_get_int(settings, "interval")
 	velocity = obs.obs_data_get_int(settings, "velocity")
 	source_name = obs.obs_data_get_string(settings, "source")
+	enabled = obs.obs_data_get_bool(settings, "enabled")
 
 	-- Set up the update callback if a source is provided
 	obs.timer_remove(update_source)
-	if source_name ~= "" then
+	if source_name ~= ""  and enabled then
 		obs.timer_add(update_source, interval)
-		enabled = true
 	end
 end
 
 function script_defaults(settings)
 	-- Set up non-property defaults
-	enabled = true
 	x_dir = 1
 	y_dir = 1
 
 	-- Set up property defaults
 	obs.obs_data_set_default_int(settings, "interval", 25)
 	obs.obs_data_set_default_int(settings, "velocity", 5)
+	obs.obs_data_set_default_bool(settings, "enabled", false)
 end
 
 function script_properties()
@@ -131,6 +118,6 @@ function script_properties()
 	end
 
 	-- Enable/Disable Toggle
-	obs.obs_properties_add_button(props, "enable_button", "Enable/Disable", enable_disable)
+	obs.obs_properties_add_bool(props, "enabled", "Enable")
 	return props
 end
