@@ -16,8 +16,6 @@ def update_source():
 
 	# If a target source is found, update it on screen
 	if scene_item:
-		dx, dy = 5, 5
-
 		# Get the current location of the source
 		location = obs.vec2()
 		obs.obs_sceneitem_get_pos(scene_item, location)
@@ -84,7 +82,9 @@ def script_update(settings):
 	global interval
 	global velocity
 	global source_name
+	global enabled
 
+	# Update information required to run the script
 	interval = obs.obs_data_get_int(settings, "interval")
 	velocity = obs.obs_data_get_int(settings, "velocity")
 	source_name = obs.obs_data_get_string(settings, "source")
@@ -93,6 +93,7 @@ def script_update(settings):
 	obs.timer_remove(update_source)
 	if source_name != "":
 		obs.timer_add(update_source, interval)
+		enabled = true
 
 # Sets up the default values of different properties
 def script_defaults(settings):
@@ -100,11 +101,13 @@ def script_defaults(settings):
 	global x_dir
 	global y_dir
 	
+	# Set up non-property defaults
 	enabled = True
 	x_dir = 1
 	y_dir = 1
 	
-	obs.obs_data_set_default_int(settings, "interval", 10)
+	# Set up property defaults
+	obs.obs_data_set_default_int(settings, "interval", 25)
 	obs.obs_data_set_default_int(settings, "velocity", 5)
 
 # Initializes script properties and creates the menu
@@ -113,7 +116,7 @@ def script_properties():
 	props = obs.obs_properties_create()
 
 	# Update Interval and Velocity input
-	obs.obs_properties_add_int(props, "interval", "Update Interval (ms)", 10, 10000, 10)
+	obs.obs_properties_add_int(props, "interval", "Update Interval (ms)", 25, 10000, 5)
 	obs.obs_properties_add_int(props, "velocity", "Velocity", 1, 100, 1)
 
 	# Get list of all sources and add them to the list
