@@ -56,19 +56,6 @@ def update_source():
 	obs.obs_source_release(source)
 	# obs.obs_sceneitem_release(scene_item) # This causes a crash and I don't know why
 
-# Toggles whether the movement is enabled by adding and removing timers
-def enable_disable(props, prop):
-	global enabled
-	
-	# Remove the timer if already enabled, add timer otherwise
-	if enabled:
-		obs.timer_remove(update_source)
-	else:
-		obs.timer_add(update_source, interval)
-
-	# Swap the enable toggle
-	enabled = not enabled
-
 # ------------------------------------------------------------
 # ------------- Code to Initialize the Script ----------------
 # ------------------------------------------------------------
@@ -82,33 +69,31 @@ def script_update(settings):
 	global interval
 	global velocity
 	global source_name
-	global enabled
 
 	# Update information required to run the script
 	interval = obs.obs_data_get_int(settings, "interval")
 	velocity = obs.obs_data_get_int(settings, "velocity")
 	source_name = obs.obs_data_get_string(settings, "source")
+	enabled = obs.obs_data_get_bool(settings, "enabled")
 
 	# Set up the update callback if a source is provided
 	obs.timer_remove(update_source)
-	if source_name != "":
+	if source_name != "" and enabled:
 		obs.timer_add(update_source, interval)
-		enabled = true
 
 # Sets up the default values of different properties
 def script_defaults(settings):
-	global enabled
 	global x_dir
 	global y_dir
 	
 	# Set up non-property defaults
-	enabled = True
 	x_dir = 1
 	y_dir = 1
 	
 	# Set up property defaults
 	obs.obs_data_set_default_int(settings, "interval", 25)
 	obs.obs_data_set_default_int(settings, "velocity", 5)
+	obs.obs_data_set_default_bool(settings, "enabled", False)
 
 # Initializes script properties and creates the menu
 def script_properties():
@@ -136,5 +121,5 @@ def script_properties():
 		obs.source_list_release(sources)
 
 	# Enable/Disable Toggle
-	obs.obs_properties_add_button(props, "enable_button", "Enable/Disable", enable_disable)
+	obs.obs_properties_add_bool(props, "enabled", "Enable")
 	return props
