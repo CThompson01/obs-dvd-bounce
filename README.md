@@ -8,7 +8,8 @@ This idea is not my own, this is just my own interpretation of it. Many others h
 
 ## Installation
 
-To install, first download the dvd_idle.py from the releases tab.
+To install, first download the dvd_idle.lua or dvd_idle.py from the releases tab. 
+Using Python scripts in OBS requires a bit more setup so if you want the easiest set up I would recommend trying the lua file and if that does not work move on to the Python script.
 
 Store the file in a location where it won't be accidentally deleted, I recommend `C:\Program Files\obs-studio\data\obs-plugins\frontend-tools\scripts` as that is where a couple scripts that are installed by default are located.
 
@@ -19,6 +20,24 @@ Under the Scripts tab select the plus sign near the bottom left.
 Navigate to where you saved the script and select it.
 
 The script is now ready to go, just select a source!
+
+### Python Installation
+
+If you are going ahead with using the Python script, you must point your OBS to your Python install directory.
+
+To do this, first ensure that you have [Python](https://wiki.python.org/moin/BeginnersGuide/Download) installed.
+
+Once Python is installed, open OBS Studio and navigate to Tools > Scripts
+
+From there, open the tab that says Python Settings.
+
+Under Python Install Path enter in the directory that your Python is installed in. For example 
+
+```
+C:/Users/WindowsUser/AppData/Local/Programs/Python/Python311
+```
+
+where WindowsUser is your current Windows Account Username and Python311 is your version of Python.
 
 ## Configuration
 
